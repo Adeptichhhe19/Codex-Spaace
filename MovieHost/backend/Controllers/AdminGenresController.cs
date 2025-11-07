@@ -19,13 +19,18 @@ public class AdminGenresController : ControllerBase
         _context = context;
     }
 
+    [HttpGet("{id:int}", Name = "GetAdminGenreById")]
+    public async Task<ActionResult<Genre>> GetGenreByIdAsync(int id)
+    {
+        var genre = await _context.Genres.FindAsync(id);
+        return genre is null ? NotFound() : Ok(genre);
+    }
+
     [HttpPost]
     public async Task<ActionResult<Genre>> CreateGenreAsync([FromBody] Genre genre)
     {
         if (!ModelState.IsValid)
-        {
             return ValidationProblem(ModelState);
-        }
 
         if (await _context.Genres.AnyAsync(g => g.Name == genre.Name))
         {
@@ -39,17 +44,19 @@ public class AdminGenresController : ControllerBase
 
         await _context.Genres.AddAsync(genre);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(CreateGenreAsync), new { id = genre.Id }, genre);
+
+        return CreatedAtRoute(
+            routeName: "GetAdminGenreById",
+            routeValues: new { id = genre.Id },
+            value: genre
+        );
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteGenreAsync(int id)
     {
         var genre = await _context.Genres.FindAsync(id);
-        if (genre == null)
-        {
-            return NotFound();
-        }
+        if (genre is null) return NotFound();
 
         _context.Genres.Remove(genre);
         await _context.SaveChangesAsync();

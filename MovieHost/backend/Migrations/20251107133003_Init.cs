@@ -1,12 +1,14 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace MovieHost.Migrations
 {
-    public partial class InitialCreate : Migration
+    /// <inheritdoc />
+    public partial class Init : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -132,13 +134,23 @@ namespace MovieHost.Migrations
                 columns: new[] { "MovieId", "FingerprintHash" });
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "MovieGenres");
-            migrationBuilder.DropTable(name: "MovieSources");
-            migrationBuilder.DropTable(name: "Votes");
-            migrationBuilder.DropTable(name: "Genres");
-            migrationBuilder.DropTable(name: "Movies");
+            migrationBuilder.DropTable(
+                name: "MovieGenres");
+
+            migrationBuilder.DropTable(
+                name: "MovieSources");
+
+            migrationBuilder.DropTable(
+                name: "Votes");
+
+            migrationBuilder.DropTable(
+                name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Movies");
         }
     }
 }

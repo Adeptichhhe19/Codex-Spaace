@@ -58,7 +58,7 @@ public class SeedService
             CreatedAt = DateTime.UtcNow.AddDays(-3)
         };
 
-        await _context.Movies.AddRangeAsync(movie1, movie2, cancellationToken);
+        await _context.Movies.AddRangeAsync(new[] { movie1, movie2 }, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
         await _context.MovieGenres.AddRangeAsync(new[]
