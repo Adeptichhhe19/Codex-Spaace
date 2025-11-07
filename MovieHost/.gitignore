@@ -1,0 +1,10 @@
+backend/bin/
+backend/obj/
+backend/app.db
+backend/Logs/
+frontend/node_modules/
+frontend/dist/
+**/*.user
+**/*.suo
+.vscode/
+.DS_Store
