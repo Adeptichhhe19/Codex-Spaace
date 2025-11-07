@@ -20,11 +20,11 @@
         <span class="logo__title">Cinema</span>
       </div>
       <nav class="navbar__menu">
-        <button class="menu__item menu__item--active" type="button">Главная</button>
-        <button class="menu__item" type="button">Фильмы</button>
-        <button class="menu__item" type="button">Сериалы</button>
-        <button class="menu__item" type="button">Мультфильмы</button>
-        <button class="menu__item" type="button">Подборки</button>
+        <button class="menu__item menu__item--active" data-target="#hero" type="button">Главная</button>
+        <button class="menu__item" data-target="#showcase" type="button">Фильмы</button>
+        <button class="menu__item" data-target="#timeline" type="button">Сериалы</button>
+        <button class="menu__item" data-target="#collections" type="button">Мультфильмы</button>
+        <button class="menu__item" data-target="#subscribe" type="button">Подборки</button>
       </nav>
       <div class="navbar__actions">
         <div class="search" data-search>
@@ -43,7 +43,7 @@
     </header>
 
     <main class="layout">
-      <section class="hero" data-hero>
+      <section class="hero" id="hero" data-hero>
         <div class="hero__background">
           <div class="hero__blur"></div>
         </div>
@@ -53,7 +53,7 @@
             alt="Постер фильма"
           />
           <div class="poster__tag">Премьера недели</div>
-          <button class="poster__play" aria-label="Смотреть трейлер" type="button">
+          <button class="poster__play" aria-label="Смотреть трейлер" data-action="trailer" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M8.5 5.5 18 12l-9.5 6.5V5.5Z" />
             </svg>
@@ -83,11 +83,11 @@
             </li>
           </ul>
           <div class="hero__buttons">
-            <button class="button button--primary" type="button">
+            <button class="button button--primary" data-action="watch" type="button">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v16l15-8L5 4Z" /></svg>
               Смотреть сейчас
             </button>
-            <button class="button button--secondary" type="button">
+            <button class="button button--secondary" data-action="favorite" aria-pressed="false" type="button">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M12 4a6 6 0 0 1 6 6c0 5-6 10-6 10S6 15 6 10a6 6 0 0 1 6-6Zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
@@ -95,7 +95,7 @@
               </svg>
               В избранное
             </button>
-            <button class="button button--ghost" type="button">
+            <button class="button button--ghost" data-action="trailer" type="button">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   d="M8 5h13v2H8v14H6V7H3V5h3V3a2 2 0 0 1 2-2h13v2H8v2Z"
@@ -125,7 +125,7 @@
         </div>
       </section>
 
-      <section class="showcase">
+      <section class="showcase" id="showcase">
         <header class="section__header">
           <h2 class="section__title">Что посмотреть</h2>
           <div class="tabs" data-tabs>
@@ -139,7 +139,7 @@
       </section>
 
       <section class="split">
-        <div class="split__panel split__panel--accent">
+        <div class="split__panel split__panel--accent" id="subscribe">
           <h3>Кинопространство</h3>
           <p>
             Авторские подборки, аналитика и рекомендации редакции каждую неделю. Погрузитесь в атмосферу
@@ -150,9 +150,9 @@
             <li>Виртуальные премьерные показы и обсуждения с режиссёрами.</li>
             <li>Эксклюзивный доступ к закрытым разделам и бонусным материалам.</li>
           </ul>
-          <button class="button button--white" type="button">Оформить подписку</button>
+          <button class="button button--white" data-action="subscribe" type="button">Оформить подписку</button>
         </div>
-        <div class="split__panel">
+        <div class="split__panel" id="timeline">
           <h4>Ленты недели</h4>
           <div class="timeline" data-grid="timeline"></div>
         </div>
@@ -163,9 +163,23 @@
           <h2 class="section__title">Коллекции дня</h2>
           <a class="section__link" href="#">Все коллекции</a>
         </header>
-        <div class="collections__grid" data-grid="collections"></div>
+        <div class="collections__grid" id="collections" data-grid="collections"></div>
       </section>
     </main>
+
+    <div class="modal" data-modal hidden>
+      <div class="modal__backdrop" data-modal-close></div>
+      <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button class="modal__close" type="button" aria-label="Закрыть" data-modal-close>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m7.05 6 4.95 4.95L16.95 6 18 7.05 13.05 12 18 16.95 16.95 18 12 13.05 7.05 18 6 16.95 10.95 12 6 7.05 7.05 6Z" />
+          </svg>
+        </button>
+        <div class="modal__content" id="modal-content"></div>
+      </div>
+    </div>
+
+    <div class="toast-container" aria-live="polite" aria-atomic="true" data-toast-container></div>
 
     <footer class="footer">
       <div class="footer__col">
@@ -199,7 +213,7 @@
       <div class="footer__col footer__col--cta">
         <h4>7 дней премиума</h4>
         <p>Активируйте пробный период и получите доступ к эксклюзивным релизам и безрекламному просмотру.</p>
-        <button class="button button--primary button--block" type="button">Активировать</button>
+        <button class="button button--primary button--block" data-action="trial" type="button">Активировать</button>
       </div>
     </footer>
 

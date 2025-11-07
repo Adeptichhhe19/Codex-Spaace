@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: moviehost
+          POSTGRES_USER: moviehost
+          POSTGRES_PASSWORD: moviehost
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U moviehost"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore backend
+        working-directory: MovieHost/backend
+        run: dotnet restore
+
+      - name: Build backend
+        working-directory: MovieHost/backend
+        run: dotnet build --no-restore
+
+      - name: Install dotnet-ef tool
+        run: |
+          dotnet tool install --global dotnet-ef
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Apply migrations (PostgreSQL)
+        env:
+          ConnectionStrings__Default: Host=localhost;Port=5432;Database=moviehost;Username=moviehost;Password=moviehost
+        working-directory: MovieHost/backend
+        run: dotnet ef database update --context AppDbContext
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install frontend dependencies
+        working-directory: MovieHost/frontend
+        run: npm install
+
+      - name: Build frontend
+        working-directory: MovieHost/frontend
+        run: npm run build
