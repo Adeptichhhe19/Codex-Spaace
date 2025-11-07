@@ -126,6 +126,15 @@ const DATASETS = {
   ],
 };
 
+const TRAILER_EMBED_URL = "https://www.youtube.com/embed/1xV4f2ZA4xo?autoplay=1&rel=0";
+const HERO_TITLE = "Астронавт: Последняя миссия";
+
+const modalState = {
+  element: null,
+  content: null,
+  lastFocused: null,
+};
+
 const timeline = [
   {
     title: "Премьера сериала \"Лунный причал\"",
@@ -164,6 +173,129 @@ const collections = [
       "https://images.unsplash.com/photo-1517814767949-6d09c2933d90?auto=format&fit=crop&w=1200&q=80",
   },
 ];
+
+function getToastIcon(type) {
+  switch (type) {
+    case "success":
+      return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.17 16.17 5 12l1.41-1.41 2.76 2.76 8.42-8.42L19 6.34 9.17 16.17Z"/></svg>`;
+    case "warning":
+      return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2Zm0 6 5 9H7l5-9Zm-1 10h2v2h-2v-2Z"/></svg>`;
+    default:
+      return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm0 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm-1 4v6h2v-6h-2Z"/></svg>`;
+  }
+}
+
+function showToast(message, type = "info") {
+  const container = document.querySelector("[data-toast-container]");
+  if (!container) return;
+  const toast = document.createElement("div");
+  toast.className = `toast toast--${type}`;
+  toast.setAttribute("role", "status");
+  toast.innerHTML = `
+    <span class="toast__icon">${getToastIcon(type)}</span>
+    <span>${message}</span>
+  `;
+  container.appendChild(toast);
+
+  const hide = () => {
+    toast.style.transition = "opacity 240ms ease, transform 240ms ease";
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(10px)";
+    toast.addEventListener("transitionend", () => toast.remove(), { once: true });
+  };
+
+  setTimeout(hide, 4200);
+  toast.addEventListener("click", hide);
+}
+
+function setupModal() {
+  const element = document.querySelector("[data-modal]");
+  if (!element) return;
+  modalState.element = element;
+  modalState.content = element.querySelector("#modal-content");
+
+  element.addEventListener("click", (event) => {
+    const trigger = event.target instanceof HTMLElement ? event.target.closest('[data-modal-close]') : null;
+    if (trigger) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modalState.element.hasAttribute("hidden")) {
+      closeModal();
+    }
+  });
+}
+
+function focusFirstElement(container) {
+  const selectors = ['button', '[href]', 'input', 'select', 'textarea', '[tabindex]:not([tabindex="-1"])'];
+  let focusable = container.querySelector(selectors.join(","));
+  if (!(focusable instanceof HTMLElement)) {
+    focusable = modalState.element?.querySelector('[data-modal-close]') ?? null;
+  }
+  if (focusable instanceof HTMLElement) {
+    focusable.focus({ preventScroll: true });
+  }
+}
+
+function openModal(options) {
+  if (!modalState.element || !modalState.content) return;
+  const { title, description, body = "", actions = [] } = options ?? {};
+  modalState.lastFocused = document.activeElement;
+  modalState.content.innerHTML = `
+    ${title ? `<h3 class="modal__title" id="modal-title">${title}</h3>` : ""}
+    ${description ? `<p class="modal__description">${description}</p>` : ""}
+    ${body}
+    ${actions.length ? `<div class="modal__actions"></div>` : ""}
+  `;
+
+  if (actions.length) {
+    const actionsContainer = modalState.content.querySelector(".modal__actions");
+    actions.forEach((action, index) => {
+      const variant = action.variant ? `button--${action.variant}` : "button--primary";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `button ${variant}`;
+      button.textContent = action.label;
+      if (typeof action.onClick === "function") {
+        button.addEventListener("click", (event) => action.onClick(event, closeModal));
+      }
+      if (action.autofocus) {
+        button.autofocus = true;
+      }
+      button.dataset.modalAction = String(index);
+      actionsContainer?.appendChild(button);
+    });
+  }
+
+  modalState.element.removeAttribute("hidden");
+  modalState.element.classList.add("modal--open");
+  document.body.classList.add("is-locked");
+  focusFirstElement(modalState.content);
+}
+
+function closeModal() {
+  if (!modalState.element || !modalState.content) return;
+  modalState.element.classList.remove("modal--open");
+
+  const finalize = () => {
+    modalState.element.setAttribute("hidden", "");
+    const iframe = modalState.content.querySelector("iframe");
+    if (iframe) {
+      iframe.src = iframe.src;
+    }
+    modalState.content.innerHTML = "";
+    document.body.classList.remove("is-locked");
+    if (modalState.lastFocused instanceof HTMLElement) {
+      modalState.lastFocused.focus({ preventScroll: true });
+    }
+    modalState.lastFocused = null;
+  };
+
+  const duration = parseFloat(getComputedStyle(modalState.element).transitionDuration) || 0;
+  window.setTimeout(finalize, duration ? duration * 1000 : 0);
+}
 
 function createCard(item) {
   return `
@@ -253,9 +385,15 @@ function setupTabs() {
 function setupMenu() {
   const items = document.querySelectorAll('.menu__item');
   items.forEach((item) =>
-    item.addEventListener('click', () => {
+    item.addEventListener('click', (event) => {
+      event.preventDefault();
       items.forEach((btn) => btn.classList.remove('menu__item--active'));
       item.classList.add('menu__item--active');
+      const { target } = item.dataset;
+      if (target) {
+        const section = document.querySelector(target);
+        section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     })
   );
 }
@@ -286,7 +424,170 @@ function setupNavbar() {
   window.addEventListener('scroll', toggleState, { passive: true });
 }
 
+function setupHeroActions() {
+  const watchButton = document.querySelector('[data-action="watch"]');
+  if (watchButton) {
+    watchButton.addEventListener('click', () => {
+      openModal({
+        title: `Начать просмотр — «${HERO_TITLE}»`,
+        description:
+          'Эпизоды будут доступны сразу после подключения плеера. Пока вы можете выбрать, с чего продолжить просмотр.',
+        body: `
+          <ul class="modal__list">
+            <li><span>Серия 1</span><span>«Обратный отсчёт»</span></li>
+            <li><span>Серия 2</span><span>«Первая стыковка»</span></li>
+            <li><span>Серия 3</span><span>«Потерянный сигнал»</span></li>
+          </ul>
+        `,
+        actions: [
+          {
+            label: 'Продолжить с 12:45',
+            variant: 'primary',
+            onClick: (_, close) => {
+              close();
+              showToast('Мы сохранили вашу позицию. Плеер появится вместе с бэкендом.', 'success');
+            },
+          },
+          {
+            label: 'Начать сначала',
+            variant: 'secondary',
+            onClick: (_, close) => {
+              close();
+              showToast('Начинаем с первой серии. Уведомим, как только будет готово.', 'info');
+            },
+          },
+        ],
+      });
+    });
+  }
+
+  const favoriteButton = document.querySelector('[data-action="favorite"]');
+  if (favoriteButton) {
+    favoriteButton.addEventListener('click', () => {
+      const isActive = favoriteButton.classList.toggle('button--selected');
+      favoriteButton.setAttribute('aria-pressed', String(isActive));
+      showToast(
+        isActive
+          ? 'Фильм добавлен в избранное. Синхронизация с аккаунтом появится позже.'
+          : 'Фильм удалён из избранного.',
+        isActive ? 'success' : 'info'
+      );
+    });
+  }
+
+  const trailerButtons = document.querySelectorAll('[data-action="trailer"]');
+  trailerButtons.forEach((button) =>
+    button.addEventListener('click', () => {
+      openModal({
+        title: `Трейлер — «${HERO_TITLE}»`,
+        description: 'Полноценный просмотр будет доступен на платформе Codex Cinema сразу после релиза.',
+        body: `
+          <div class="modal__video">
+            <iframe
+              src="${TRAILER_EMBED_URL}"
+              title="Трейлер фильма ${HERO_TITLE}"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+        `,
+        actions: [
+          {
+            label: 'Добавить напоминание',
+            variant: 'secondary',
+            onClick: (_, close) => {
+              close();
+              showToast('Напоминание отправим за день до премьеры.', 'success');
+            },
+          },
+        ],
+      });
+    })
+  );
+}
+
+function setupSubscription() {
+  const subscribeButton = document.querySelector('[data-action="subscribe"]');
+  if (subscribeButton) {
+    subscribeButton.addEventListener('click', () => {
+      openModal({
+        title: 'Codex+ — премиальная подписка',
+        description: 'Получите доступ к эксклюзивным релизам, офлайн-режиму и синхронизации устройств.',
+        body: `
+          <ul class="modal__list">
+            <li><span>4K/8K контент</span><span>Без ограничений</span></li>
+            <li><span>Совместный просмотр</span><span>До 4 друзей</span></li>
+            <li><span>Эксклюзивы Codex</span><span>Каждую неделю</span></li>
+          </ul>
+        `,
+        actions: [
+          {
+            label: 'Оформить за 499 ₽',
+            variant: 'primary',
+            onClick: (_, close) => {
+              close();
+              showToast('Заявка на подписку отправлена. Мы свяжемся с вами после авторизации.', 'success');
+            },
+          },
+          {
+            label: 'Подробнее',
+            variant: 'ghost',
+            onClick: (_, close) => {
+              close();
+              showToast('Скоро появится страница с тарифами и условиями.', 'info');
+            },
+          },
+        ],
+      });
+    });
+  }
+}
+
+function setupTrialActivation() {
+  const trialButton = document.querySelector('[data-action="trial"]');
+  if (trialButton) {
+    trialButton.addEventListener('click', () => {
+      showToast('7-дневный пробный период активируется сразу после входа в аккаунт.', 'success');
+    });
+  }
+}
+
+function setupProfileShortcut() {
+  const profileButton = document.querySelector('.navbar__profile');
+  if (profileButton) {
+    profileButton.addEventListener('click', () => {
+      openModal({
+        title: 'Мой профиль',
+        description: 'Следите за прогрессом, создавайте подборки и управляйте подпиской в одном месте.',
+        body: `
+          <ul class="modal__list">
+            <li><span>История просмотров</span><span>Синхронизация с устройствами</span></li>
+            <li><span>Избранное</span><span>Доступно офлайн</span></li>
+            <li><span>Личные рекомендации</span><span>На основе вашего настроения</span></li>
+          </ul>
+        `,
+        actions: [
+          {
+            label: 'Перейти в настройки',
+            variant: 'primary',
+            onClick: (_, close) => {
+              close();
+              showToast('Настройки профиля появятся после подключения бэкенда.', 'info');
+            },
+          },
+          {
+            label: 'Закрыть',
+            variant: 'ghost',
+            onClick: (_, close) => close(),
+          },
+        ],
+      });
+    });
+  }
+}
+
 function init() {
+  setupModal();
   renderGrid('trending');
   renderTimeline();
   renderCollections();
@@ -294,6 +595,10 @@ function init() {
   setupMenu();
   setupHeroParallax();
   setupNavbar();
+  setupHeroActions();
+  setupSubscription();
+  setupTrialActivation();
+  setupProfileShortcut();
 }
 
 document.addEventListener('DOMContentLoaded', init);
