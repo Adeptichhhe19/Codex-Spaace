@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Codex Cinema — Премьеры, сериалы и эксклюзивы</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page">
+    <div class="page__glow"></div>
+    <header class="navbar" data-navbar>
+      <div class="navbar__logo">
+        <span class="logo__accent">Codex</span>
+        <span class="logo__title">Cinema</span>
+      </div>
+      <nav class="navbar__menu">
+        <button class="menu__item menu__item--active" type="button">Главная</button>
+        <button class="menu__item" type="button">Фильмы</button>
+        <button class="menu__item" type="button">Сериалы</button>
+        <button class="menu__item" type="button">Мультфильмы</button>
+        <button class="menu__item" type="button">Подборки</button>
+      </nav>
+      <div class="navbar__actions">
+        <div class="search" data-search>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M10.5 3a7.5 7.5 0 1 1 4.73 13.36l3.55 3.56a1 1 0 0 1-1.42 1.41l-3.56-3.55A7.5 7.5 0 0 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z"
+            />
+          </svg>
+          <input type="search" placeholder="Поиск фильмов и сериалов" />
+        </div>
+        <button class="navbar__profile" type="button">
+          <span class="profile__avatar">MN</span>
+          <span class="profile__label">Мой профиль</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="hero" data-hero>
+        <div class="hero__background">
+          <div class="hero__blur"></div>
+        </div>
+        <div class="hero__poster">
+          <img
+            src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=640&q=80"
+            alt="Постер фильма"
+          />
+          <div class="poster__tag">Премьера недели</div>
+          <button class="poster__play" aria-label="Смотреть трейлер" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8.5 5.5 18 12l-9.5 6.5V5.5Z" />
+            </svg>
+          </button>
+        </div>
+        <div class="hero__content">
+          <div class="hero__meta">
+            <span class="meta__badge">Новинка</span>
+            <span class="meta__format">4K HDR</span>
+          </div>
+          <h1 class="hero__title">Астронавт: Последняя миссия</h1>
+          <p class="hero__subtitle">
+            Космическая сага о смелой экспедиции, которая должна спасти Землю, пока время не истекло.
+          </p>
+          <ul class="hero__stats">
+            <li class="stats__item">
+              <span class="stats__label">IMDb</span>
+              <span class="stats__value">8.9</span>
+            </li>
+            <li class="stats__item">
+              <span class="stats__label">Kinopoisk</span>
+              <span class="stats__value">9.1</span>
+            </li>
+            <li class="stats__item">
+              <span class="stats__label">Премьера</span>
+              <span class="stats__value">12 марта 2025</span>
+            </li>
+          </ul>
+          <div class="hero__buttons">
+            <button class="button button--primary" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4v16l15-8L5 4Z" /></svg>
+              Смотреть сейчас
+            </button>
+            <button class="button button--secondary" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 4a6 6 0 0 1 6 6c0 5-6 10-6 10S6 15 6 10a6 6 0 0 1 6-6Zm0 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+                />
+              </svg>
+              В избранное
+            </button>
+            <button class="button button--ghost" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M8 5h13v2H8v14H6V7H3V5h3V3a2 2 0 0 1 2-2h13v2H8v2Z"
+                />
+              </svg>
+              Трейлер
+            </button>
+          </div>
+          <div class="hero__details">
+            <div>
+              <span class="details__label">Жанр</span>
+              <span class="details__value">Научная фантастика, триллер</span>
+            </div>
+            <div>
+              <span class="details__label">Режиссёр</span>
+              <span class="details__value">Джессика Варлей</span>
+            </div>
+            <div>
+              <span class="details__label">Длительность</span>
+              <span class="details__value">2 ч 17 мин</span>
+            </div>
+            <div>
+              <span class="details__label">Возраст</span>
+              <span class="details__value">16+</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="showcase">
+        <header class="section__header">
+          <h2 class="section__title">Что посмотреть</h2>
+          <div class="tabs" data-tabs>
+            <button class="tabs__item tabs__item--active" data-filter="trending" type="button">Популярное</button>
+            <button class="tabs__item" data-filter="premieres" type="button">Премьеры</button>
+            <button class="tabs__item" data-filter="exclusive" type="button">Эксклюзивы</button>
+            <button class="tabs__item" data-filter="top250" type="button">Топ 250</button>
+          </div>
+        </header>
+        <div class="carousel" data-grid="trending"></div>
+      </section>
+
+      <section class="split">
+        <div class="split__panel split__panel--accent">
+          <h3>Кинопространство</h3>
+          <p>
+            Авторские подборки, аналитика и рекомендации редакции каждую неделю. Погрузитесь в атмосферу
+            просмотра с подборками, собранными экспертами.
+          </p>
+          <ul class="list">
+            <li>Персональные рекомендации на основе вашего настроения.</li>
+            <li>Виртуальные премьерные показы и обсуждения с режиссёрами.</li>
+            <li>Эксклюзивный доступ к закрытым разделам и бонусным материалам.</li>
+          </ul>
+          <button class="button button--white" type="button">Оформить подписку</button>
+        </div>
+        <div class="split__panel">
+          <h4>Ленты недели</h4>
+          <div class="timeline" data-grid="timeline"></div>
+        </div>
+      </section>
+
+      <section class="collections">
+        <header class="section__header">
+          <h2 class="section__title">Коллекции дня</h2>
+          <a class="section__link" href="#">Все коллекции</a>
+        </header>
+        <div class="collections__grid" data-grid="collections"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__col">
+        <div class="navbar__logo footer__logo">
+          <span class="logo__accent">Codex</span>
+          <span class="logo__title">Cinema</span>
+        </div>
+        <p>
+          Платформа нового поколения для киноманов. Мы объединяем потоковое вещание, аналитику и комьюнити, чтобы
+          вы получали удовольствие от каждого кадра.
+        </p>
+      </div>
+      <div class="footer__col">
+        <h4>Навигация</h4>
+        <ul>
+          <li><a href="#">Каталог</a></li>
+          <li><a href="#">Подписки</a></li>
+          <li><a href="#">Избранное</a></li>
+          <li><a href="#">Поддержка</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Следите за нами</h4>
+        <ul class="socials">
+          <li><a href="#">VK</a></li>
+          <li><a href="#">Telegram</a></li>
+          <li><a href="#">YouTube</a></li>
+          <li><a href="#">TikTok</a></li>
+        </ul>
+      </div>
+      <div class="footer__col footer__col--cta">
+        <h4>7 дней премиума</h4>
+        <p>Активируйте пробный период и получите доступ к эксклюзивным релизам и безрекламному просмотру.</p>
+        <button class="button button--primary button--block" type="button">Активировать</button>
+      </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
