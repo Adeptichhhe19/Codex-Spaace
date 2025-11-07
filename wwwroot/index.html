@@ -33,7 +33,8 @@
               d="M10.5 3a7.5 7.5 0 1 1 4.73 13.36l3.55 3.56a1 1 0 0 1-1.42 1.41l-3.56-3.55A7.5 7.5 0 0 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z"
             />
           </svg>
-          <input type="search" placeholder="Поиск фильмов и сериалов" />
+          <input type="search" placeholder="Поиск фильмов и сериалов" aria-label="Поиск фильмов и сериалов" />
+          <div class="search__results" data-search-results hidden></div>
         </div>
         <button class="navbar__profile" type="button">
           <span class="profile__avatar">MN</span>
@@ -49,10 +50,11 @@
         </div>
         <div class="hero__poster">
           <img
+            data-hero-poster
             src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=640&q=80"
             alt="Постер фильма"
           />
-          <div class="poster__tag">Премьера недели</div>
+          <div class="poster__tag" data-hero-poster-badge>Премьера недели</div>
           <button class="poster__play" aria-label="Смотреть трейлер" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M8.5 5.5 18 12l-9.5 6.5V5.5Z" />
@@ -61,25 +63,25 @@
         </div>
         <div class="hero__content">
           <div class="hero__meta">
-            <span class="meta__badge">Новинка</span>
-            <span class="meta__format">4K HDR</span>
+            <span class="meta__badge" data-hero-meta-badge>Новинка</span>
+            <span class="meta__format" data-hero-meta-format>4K HDR</span>
           </div>
-          <h1 class="hero__title">Астронавт: Последняя миссия</h1>
-          <p class="hero__subtitle">
+          <h1 class="hero__title" data-hero-title>Астронавт: Последняя миссия</h1>
+          <p class="hero__subtitle" data-hero-subtitle>
             Космическая сага о смелой экспедиции, которая должна спасти Землю, пока время не истекло.
           </p>
           <ul class="hero__stats">
             <li class="stats__item">
               <span class="stats__label">IMDb</span>
-              <span class="stats__value">8.9</span>
+              <span class="stats__value" data-hero-stat-imdb>8.9</span>
             </li>
             <li class="stats__item">
               <span class="stats__label">Kinopoisk</span>
-              <span class="stats__value">9.1</span>
+              <span class="stats__value" data-hero-stat-kinopoisk>9.1</span>
             </li>
             <li class="stats__item">
               <span class="stats__label">Премьера</span>
-              <span class="stats__value">12 марта 2025</span>
+              <span class="stats__value" data-hero-stat-premiere>12 марта 2025</span>
             </li>
           </ul>
           <div class="hero__buttons">
@@ -107,19 +109,19 @@
           <div class="hero__details">
             <div>
               <span class="details__label">Жанр</span>
-              <span class="details__value">Научная фантастика, триллер</span>
+              <span class="details__value" data-hero-detail-genre>Научная фантастика, триллер</span>
             </div>
             <div>
               <span class="details__label">Режиссёр</span>
-              <span class="details__value">Джессика Варлей</span>
+              <span class="details__value" data-hero-detail-director>Джессика Варлей</span>
             </div>
             <div>
               <span class="details__label">Длительность</span>
-              <span class="details__value">2 ч 17 мин</span>
+              <span class="details__value" data-hero-detail-duration>2 ч 17 мин</span>
             </div>
             <div>
               <span class="details__label">Возраст</span>
-              <span class="details__value">16+</span>
+              <span class="details__value" data-hero-detail-age>16+</span>
             </div>
           </div>
         </div>
